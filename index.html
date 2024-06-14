@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Random Password Generator</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #fafafa;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            max-width: 400px;
+            width: 100%;
+        }
+        select, input[type=number] {
+            padding: 15px;
+            margin: 15px 0;
+            width: calc(100% - 30px);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: calc(100% - 60px);
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #passwordDisplay {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            color: #333;
+            word-wrap: break-word;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Generate a Random Password</h2>
+        <select id="charType">
+            <option value="special" selected>Include Special Characters</option>
+            <option value="alphanumeric">Uppercase, Lowercase Letters and Digits</option>
+            <option value="mixedcase">Uppercase and Lowercase Letters</option>
+            <option value="lowercase">Lowercase Letters Only</option>
+        </select>
+        <input type="number" id="passwordLength" inputmode="numeric" pattern="[0-9]*" placeholder="Enter desired length (default: 16)..." min="1" max="128" required>
+        <button onclick="generatePassword()">Generate Password</button>
+        <div id="passwordDisplay"></div>
+        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+        <br><br>
+        <!-- New Button for strength.thedavidglass.com -->
+        <button class="button" onclick="window.open('https://strength.passwords.thedavidglass.com', '_blank');">Test Your Password Strength</button>
+        <br><br>
+        <!-- Existing Button for thedavidglass.com -->
+        <button class="button" onclick="window.open('https://thedavidglass.com', '_blank');">Visit My Main Site</button>
+    </div>
+    
+    <script>
+        function generatePassword() {
+            const charType = document.getElementById('charType').value;
+            const length = parseInt(document.getElementById('passwordLength').value) || 16; // Default length to 16 if input is invalid
+            const charsetLowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const charsetUppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const charsetDigits = '0123456789';
+            const charsetSpecial = '!@#$%^&*-_+=?~';
+            let charset = '';
+
+            switch(charType) {
+                case 'lowercase':
+                    charset = charsetLowercase;
+                    break;
+                case 'mixedcase':
+                    charset = charsetLowercase + charsetUppercase;
+                    break;
+                case 'alphanumeric':
+                    charset = charsetLowercase + charsetUppercase + charsetDigits;
+                    break;
+                case 'special':
+                    charset = charsetLowercase + charsetUppercase + charsetDigits + charsetSpecial;
+                    break;
+                default:
+                    charset = charsetLowercase + charsetUppercase + charsetDigits + charsetSpecial; // Default to special
+            }
+
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            document.getElementById('passwordDisplay').innerText = password;
+        }
+
+        function copyToClipboard() {
+            const password = document.getElementById('passwordDisplay').innerText;
+            navigator.clipboard.writeText(password).then(() => {
+            }, (err) => {
+                console.error('Error copying text to clipboard:', err);
+                alert('Failed to copy password');
+            });
+        }
+    </script>
+</body>
+</html>
+
