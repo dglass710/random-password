@@ -78,8 +78,8 @@
         </select>
         <input type="number" id="passwordLength" inputmode="numeric" pattern="[0-9]*" placeholder="Enter desired length (default: 16)..." min="1" max="128" required>
         <button onclick="generatePassword()">Generate Password</button>
-        <div id="passwordDisplay" style="display:none;"></div>
-        <button id="toggleVisibilityButton" style="display:none;" onclick="togglePasswordVisibility()">See</button>
+        <div id="passwordDisplay"></div>
+        <button id="toggleVisibilityButton" onclick="togglePasswordVisibility()">See</button>
         <br><br>
         <button onclick="copyToClipboard()">Copy to Clipboard</button>
         <br><br>
@@ -91,6 +91,8 @@
     </div>
     
     <script>
+        let isPasswordVisible = false;
+
         function generatePassword() {
             const charType = document.getElementById('charType').value;
             const length = parseInt(document.getElementById('passwordLength').value) || 16; // Default length to 16 if input is invalid
@@ -122,12 +124,8 @@
                 password += charset.charAt(Math.floor(Math.random() * charset.length));
             }
 
-            document.getElementById('passwordDisplay').innerText = password;
-            document.getElementById('passwordDisplay').style.display = 'flex';
             document.getElementById('passwordDisplay').dataset.originalText = password;
-            document.getElementById('passwordDisplay').innerText = '*'.repeat(password.length);
-            document.getElementById('toggleVisibilityButton').innerText = 'See';
-            document.getElementById('toggleVisibilityButton').style.display = 'inline-block';
+            updatePasswordVisibility();
         }
 
         function copyToClipboard() {
@@ -140,11 +138,16 @@
         }
 
         function togglePasswordVisibility() {
+            isPasswordVisible = !isPasswordVisible;
+            updatePasswordVisibility();
+        }
+
+        function updatePasswordVisibility() {
             const passwordDisplay = document.getElementById('passwordDisplay');
             const visibilityButton = document.getElementById('toggleVisibilityButton');
             const originalText = passwordDisplay.dataset.originalText;
 
-            if (passwordDisplay.innerText === '*'.repeat(originalText.length)) {
+            if (isPasswordVisible) {
                 passwordDisplay.innerText = originalText;
                 visibilityButton.innerText = 'Hide';
             } else {
