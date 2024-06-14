@@ -78,7 +78,9 @@
         </select>
         <input type="number" id="passwordLength" inputmode="numeric" pattern="[0-9]*" placeholder="Enter desired length (default: 16)..." min="1" max="128" required>
         <button onclick="generatePassword()">Generate Password</button>
-        <div id="passwordDisplay"></div>
+        <div id="passwordDisplay" style="display:none;"></div>
+        <button id="toggleVisibilityButton" style="display:none;" onclick="togglePasswordVisibility()">See</button>
+        <br><br>
         <button onclick="copyToClipboard()">Copy to Clipboard</button>
         <br><br>
         <!-- New Button for strength.thedavidglass.com -->
@@ -119,18 +121,37 @@
             for (let i = 0; i < length; i++) {
                 password += charset.charAt(Math.floor(Math.random() * charset.length));
             }
+
             document.getElementById('passwordDisplay').innerText = password;
+            document.getElementById('passwordDisplay').style.display = 'flex';
+            document.getElementById('passwordDisplay').dataset.originalText = password;
+            document.getElementById('passwordDisplay').innerText = '*'.repeat(password.length);
+            document.getElementById('toggleVisibilityButton').innerText = 'See';
+            document.getElementById('toggleVisibilityButton').style.display = 'inline-block';
         }
 
         function copyToClipboard() {
-            const password = document.getElementById('passwordDisplay').innerText;
+            const password = document.getElementById('passwordDisplay').dataset.originalText;
             navigator.clipboard.writeText(password).then(() => {
             }, (err) => {
                 console.error('Error copying text to clipboard:', err);
                 alert('Failed to copy password');
             });
         }
+
+        function togglePasswordVisibility() {
+            const passwordDisplay = document.getElementById('passwordDisplay');
+            const visibilityButton = document.getElementById('toggleVisibilityButton');
+            const originalText = passwordDisplay.dataset.originalText;
+
+            if (passwordDisplay.innerText === '*'.repeat(originalText.length)) {
+                passwordDisplay.innerText = originalText;
+                visibilityButton.innerText = 'Hide';
+            } else {
+                passwordDisplay.innerText = '*'.repeat(originalText.length);
+                visibilityButton.innerText = 'See';
+            }
+        }
     </script>
 </body>
 </html>
-
